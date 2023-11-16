@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using TMPro;
+using System.Runtime.InteropServices;
 
 public class MainManager : MonoBehaviour
 {
@@ -10,15 +12,21 @@ public class MainManager : MonoBehaviour
     public int LineCount = 6;
     public Rigidbody Ball;
 
-    public Text ScoreText;
+    public TextMeshProUGUI ScoreText;
     public GameObject GameOverText;
+    public TextMeshProUGUI BestScoreText;
     
     private bool m_Started = false;
     private int m_Points;
     
     private bool m_GameOver = false;
 
-    
+
+    private void Awake()
+    {
+        BestScoreText.text = "Best Score : " + SceneManagerSingleton.Instance.highScorePlayerName + ": " + SceneManagerSingleton.Instance.highScore;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -72,5 +80,14 @@ public class MainManager : MonoBehaviour
     {
         m_GameOver = true;
         GameOverText.SetActive(true);
+
+        if(SceneManagerSingleton.Instance.highScore < m_Points)
+        {
+            SceneManagerSingleton.Instance.highScorePlayerName = SceneManagerSingleton.Instance.currentPlayerName;
+            SceneManagerSingleton.Instance.highScore = m_Points;
+        }
+
+
+        SceneManagerSingleton.Instance.SavePlayerData();
     }
 }
